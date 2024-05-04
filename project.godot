@@ -1,0 +1,36 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Local Image Liker"
+config/description="An application that lets you manually separate images in a folder into \"liked\" and \"disliked\" folders"
+config/version="1.0.0"
+run/main_scene="res://Scenes/Main.tscn"
+config/features=PackedStringArray("4.2", "C#", "Forward Plus")
+run/max_fps=60
+run/low_processor_mode=true
+config/icon="res://Icons/logo.png"
+
+[dotnet]
+
+project/assembly_name="Local Image Liker"
+
+[physics]
+
+common/physics_ticks_per_second=1
+common/max_physics_steps_per_frame=1
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=2
+textures/lossless_compression/force_png=true
+textures/default_filters/anisotropic_filtering_level=4
+anti_aliasing/quality/msaa_2d=3

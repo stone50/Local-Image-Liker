@@ -1,0 +1,146 @@
+[gd_scene load_steps=9 format=3 uid="uid://cyiv6dfc511tp"]
+
+[ext_resource type="Script" path="res://Scripts/LocalImageLiker.cs" id="1_s3bok"]
+[ext_resource type="Texture2D" uid="uid://bhlh2ydmiimpu" path="res://Icons/trash.svg" id="1_xqjv6"]
+[ext_resource type="Texture2D" uid="uid://mqq8he7filu1" path="res://Icons/folder.svg" id="3_qakui"]
+[ext_resource type="Script" path="res://Scripts/CurrentDirButton.cs" id="3_rfwgi"]
+[ext_resource type="Texture2D" uid="uid://cflmyaqqo6dkt" path="res://Icons/heart.png" id="4_0ti8q"]
+[ext_resource type="Script" path="res://Scripts/DislikeDirButton.cs" id="5_h44co"]
+[ext_resource type="Script" path="res://Scripts/LikeDirButton.cs" id="8_cf2ys"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_emslu"]
+font_size = 32
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_s3bok")
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "Open a Directory"
+initial_position = 2
+size = Vector2i(1152, 648)
+ok_button_text = "Select Current Folder"
+dialog_hide_on_ok = true
+file_mode = 2
+access = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Local Image Liker"
+label_settings = SubResource("LabelSettings_emslu")
+vertical_alignment = 1
+
+[node name="Current Dir Button" type="Button" parent="VBoxContainer/Header"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+text = "Choose a folder"
+icon = ExtResource("3_qakui")
+alignment = 0
+text_overrun_behavior = 3
+clip_text = true
+script = ExtResource("3_rfwgi")
+
+[node name="Body" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Dislike" type="PanelContainer" parent="VBoxContainer/Body"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Body/Dislike"]
+layout_mode = 2
+
+[node name="Dislike Button" type="Button" parent="VBoxContainer/Body/Dislike/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+icon = ExtResource("1_xqjv6")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Dislike Dir Button" type="Button" parent="VBoxContainer/Body/Dislike/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+focus_mode = 0
+text = "Choose a folder"
+icon = ExtResource("3_qakui")
+alignment = 0
+text_overrun_behavior = 3
+clip_text = true
+script = ExtResource("5_h44co")
+
+[node name="Image" type="PanelContainer" parent="VBoxContainer/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Body/Image"]
+layout_mode = 2
+
+[node name="Image Texture Rect" type="TextureRect" parent="VBoxContainer/Body/Image/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Skip Button" type="Button" parent="VBoxContainer/Body/Image/VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+focus_mode = 0
+text = "Skip"
+
+[node name="Like" type="PanelContainer" parent="VBoxContainer/Body"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Body/Like"]
+layout_mode = 2
+
+[node name="Like Button" type="Button" parent="VBoxContainer/Body/Like/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+icon = ExtResource("4_0ti8q")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Like Dir Button" type="Button" parent="VBoxContainer/Body/Like/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+focus_mode = 0
+text = "Choose a folder"
+icon = ExtResource("3_qakui")
+alignment = 0
+text_overrun_behavior = 3
+clip_text = true
+script = ExtResource("8_cf2ys")
