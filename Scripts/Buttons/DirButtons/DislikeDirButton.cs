@@ -1,4 +1,4 @@
-﻿namespace LocalImageLiker {
+﻿namespace LocalImageLiker.Buttons.DirButtons {
     using Godot;
 
     public partial class DislikeDirButton : Button {

@@ -1,12 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://cyiv6dfc511tp"]
+[gd_scene load_steps=13 format=3 uid="uid://cyiv6dfc511tp"]
 
 [ext_resource type="Script" path="res://Scripts/LocalImageLiker.cs" id="1_s3bok"]
 [ext_resource type="Texture2D" uid="uid://bhlh2ydmiimpu" path="res://Icons/trash.svg" id="1_xqjv6"]
 [ext_resource type="Texture2D" uid="uid://mqq8he7filu1" path="res://Icons/folder.svg" id="3_qakui"]
-[ext_resource type="Script" path="res://Scripts/CurrentDirButton.cs" id="3_rfwgi"]
+[ext_resource type="Script" path="res://Scripts/Buttons/DirButtons/CurrentDirButton.cs" id="3_s4s37"]
 [ext_resource type="Texture2D" uid="uid://cflmyaqqo6dkt" path="res://Icons/heart.png" id="4_0ti8q"]
-[ext_resource type="Script" path="res://Scripts/DislikeDirButton.cs" id="5_h44co"]
-[ext_resource type="Script" path="res://Scripts/LikeDirButton.cs" id="8_cf2ys"]
+[ext_resource type="Script" path="res://Scripts/Buttons/DislikeButton.cs" id="5_3r3wk"]
+[ext_resource type="Script" path="res://Scripts/Buttons/DirButtons/DislikeDirButton.cs" id="5_6nney"]
+[ext_resource type="Script" path="res://Scripts/Messenger.cs" id="6_6ejf2"]
+[ext_resource type="Script" path="res://Scripts/Buttons/SkipButton.cs" id="7_d6w72"]
+[ext_resource type="Script" path="res://Scripts/Buttons/DirButtons/LikeDirButton.cs" id="7_yk3wu"]
+[ext_resource type="Script" path="res://Scripts/Buttons/LikeButton.cs" id="8_0q36u"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_emslu"]
 font_size = 32
@@ -64,7 +68,7 @@ icon = ExtResource("3_qakui")
 alignment = 0
 text_overrun_behavior = 3
 clip_text = true
-script = ExtResource("3_rfwgi")
+script = ExtResource("3_s4s37")
 
 [node name="Body" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -85,6 +89,7 @@ focus_mode = 0
 icon = ExtResource("1_xqjv6")
 icon_alignment = 1
 expand_icon = true
+script = ExtResource("5_3r3wk")
 
 [node name="Dislike Dir Button" type="Button" parent="VBoxContainer/Body/Dislike/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
@@ -95,7 +100,7 @@ icon = ExtResource("3_qakui")
 alignment = 0
 text_overrun_behavior = 3
 clip_text = true
-script = ExtResource("5_h44co")
+script = ExtResource("5_6nney")
 
 [node name="Image" type="PanelContainer" parent="VBoxContainer/Body"]
 layout_mode = 2
@@ -117,6 +122,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 8
 focus_mode = 0
 text = "Skip"
+script = ExtResource("7_d6w72")
 
 [node name="Like" type="PanelContainer" parent="VBoxContainer/Body"]
 custom_minimum_size = Vector2(200, 0)
@@ -133,6 +139,7 @@ focus_mode = 0
 icon = ExtResource("4_0ti8q")
 icon_alignment = 1
 expand_icon = true
+script = ExtResource("8_0q36u")
 
 [node name="Like Dir Button" type="Button" parent="VBoxContainer/Body/Like/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
@@ -143,4 +150,29 @@ icon = ExtResource("3_qakui")
 alignment = 0
 text_overrun_behavior = 3
 clip_text = true
-script = ExtResource("8_cf2ys")
+script = ExtResource("7_yk3wu")
+
+[node name="Messenger" type="Control" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_6ejf2")
+
+[node name="Message List" type="VBoxContainer" parent="Messenger"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 75.0
+offset_right = 100.0
+offset_bottom = 575.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3

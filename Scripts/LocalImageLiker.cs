@@ -1,10 +1,16 @@
-// TODO: create config system
+/*
+ * TODO:
+ *  Add a logging system
+ *  Add a button to manually refresh the textures (or possibly setup a directory monitor)
+ *  Add a button to manually reset the skipped images
+ */
 
 namespace LocalImageLiker {
     using Godot;
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     public partial class LocalImageLiker : Node {
         public class ImageInfo {
@@ -16,8 +22,6 @@ namespace LocalImageLiker {
                 Texture = texture;
             }
         }
-
-        public static LocalImageLiker Singleton { get; private set; } = null!;
 
         public static FileDialog FileDialog { get; private set; } = null!;
         private static Button CurrentDirButton = null!;
@@ -51,12 +55,7 @@ namespace LocalImageLiker {
 
         private static readonly Queue<ImageInfo> CurrentImageInfos = new();
         private static ImageInfo? CurrentImageInfo;
-
-        public LocalImageLiker() {
-            Singleton = this;
-
-            // TODO: initialize config values (CurrentDirPath, LikeDirPath, DislikeDirPath, BatchSize)
-        }
+        private static readonly Queue<ImageInfo> SkippedImageInfos = new();
 
         public override void _Ready() {
             FileDialog = GetNode<FileDialog>("FileDialog");
@@ -64,64 +63,83 @@ namespace LocalImageLiker {
             LikeDirButton = GetNode<Button>("VBoxContainer/Body/Like/VBoxContainer/Like Dir Button");
             DislikeDirButton = GetNode<Button>("VBoxContainer/Body/Dislike/VBoxContainer/Dislike Dir Button");
             ImageTextureRect = GetNode<TextureRect>("VBoxContainer/Body/Image/VBoxContainer/Image Texture Rect");
+
+            if (Config.Load()) {
+                LoadPropertyFromConfig<string?>(SetCurrentDirPath, nameof(CurrentDirPath), null);
+                LoadPropertyFromConfig<string?>(SetLikeDirPath, nameof(LikeDirPath), null);
+                LoadPropertyFromConfig<string?>(SetDislikeDirPath, nameof(DislikeDirPath), null);
+                LoadPropertyFromConfig(SetBatchSize, nameof(BatchSize), 3);
+            }
+
+            RefreshCurrentTextures();
         }
 
-        private static void SetCurrentDirPath(string? newCurrentDirPath) {
+        private static void LoadPropertyFromConfig<[MustBeVariant] T>(Action<T?, bool> propertySetter, string propertyName, T defaultValue) => propertySetter(Config.TryGetProperty<T>(propertyName, out var value) ? value : defaultValue, true);
+
+        private static void SetCurrentDirPath(string? newCurrentDirPath, bool init = false) {
             if (newCurrentDirPath == currentDirPath) {
                 return;
             }
 
             currentDirPath = newCurrentDirPath;
 
-            // TODO: update config
+            if (!init) {
+                Config.SaveProperty(nameof(CurrentDirPath), newCurrentDirPath ?? "");
 
-            RefreshCurrentTextures();
+                RefreshCurrentTextures();
+            }
 
             CurrentDirButton.Text = newCurrentDirPath;
         }
 
-        private static void SetLikeDirPath(string? newLikeDirPath) {
+        private static void SetLikeDirPath(string? newLikeDirPath, bool init = false) {
             if (newLikeDirPath == likeDirPath) {
                 return;
             }
 
             likeDirPath = newLikeDirPath;
 
-            // TODO: update config
+            if (!init) {
+                Config.SaveProperty(nameof(LikeDirPath), newLikeDirPath ?? "");
+            }
 
             LikeDirButton.Text = newLikeDirPath;
         }
 
-        private static void SetDislikeDirPath(string? newDisikeDirPath) {
+        private static void SetDislikeDirPath(string? newDisikeDirPath, bool init = false) {
             if (newDisikeDirPath == dislikeDirPath) {
                 return;
             }
 
             dislikeDirPath = newDisikeDirPath;
 
-            // TODO: update config
+            if (!init) {
+                Config.SaveProperty(nameof(DislikeDirPath), newDisikeDirPath);
+            }
 
             DislikeDirButton.Text = newDisikeDirPath;
         }
 
-        private static void SetBatchSize(int newBatchSize) {
+        private static void SetBatchSize(int newBatchSize, bool init = false) {
             if (newBatchSize == batchSize) {
                 return;
             }
 
             batchSize = newBatchSize;
 
-            // TODO: update config
+            if (!init) {
+                Config.SaveProperty(nameof(BatchSize), newBatchSize);
 
-            RefreshCurrentTextures();
+                RefreshCurrentTextures();
+            }
         }
 
-        public static void RefreshCurrentTextures() {
+        public static void RefreshCurrentTextures(bool loadNextImageInfo = true) {
             CurrentImageInfos.Clear();
             CurrentImageInfo = null;
 
             if (CurrentDirPath is null) {
-                // TODO: warn user
+                Messenger.SendCallToAction("Please select a folder to go through images.");
                 return;
             }
 
@@ -129,13 +147,13 @@ namespace LocalImageLiker {
             try {
                 filePaths = Directory.GetFiles(CurrentDirPath);
             } catch (Exception ex) {
-                // TODO: warn user
+                Messenger.SendError($"Could not get files in '{CurrentDirPath}'. Exception: {ex}");
                 return;
             }
 
             foreach (var filePath in filePaths) {
-                if (CurrentImageInfos.Count >= BatchSize) {
-                    break;
+                if (SkippedImageInfos.Any(imageInfo => imageInfo.FilePath == filePath)) {
+                    continue;
                 }
 
                 var image = Image.LoadFromFile(filePath);
@@ -149,67 +167,96 @@ namespace LocalImageLiker {
                 }
 
                 CurrentImageInfos.Enqueue(new(filePath, texture));
+
+                if (CurrentImageInfos.Count >= BatchSize) {
+                    break;
+                }
             }
 
-            LoadNextImageInfo(false);
+            if (loadNextImageInfo) {
+                LoadNextImageInfo();
+            }
         }
 
-        private static void LoadNextImageInfo(bool refreshIfEmpty = true) {
-            if (refreshIfEmpty && CurrentImageInfos.Count <= 0) {
-                RefreshCurrentTextures();
+        private static void LoadNextImageInfo() {
+            if (CurrentImageInfos.Count <= 0) {
+                RefreshCurrentTextures(false);
             }
 
-            CurrentImageInfo = CurrentImageInfos.Count > 0 ? CurrentImageInfos.Dequeue() : null;
+            if (CurrentImageInfos.Count <= 0) {
+                while (SkippedImageInfos.Count > 0) {
+                    CurrentImageInfos.Enqueue(SkippedImageInfos.Dequeue());
+                }
+            }
 
-            ImageTextureRect.Texture = CurrentImageInfo?.Texture;
+            if (CurrentImageInfos.Count <= 0) {
+                CurrentImageInfo = null;
+                ImageTextureRect.Texture = null;
+                Messenger.SendInfo($"Could not find more images in '{CurrentDirPath}'");
+                return;
+            }
+
+            CurrentImageInfo = CurrentImageInfos.Dequeue();
+            ImageTextureRect.Texture = CurrentImageInfo!.Texture;
+        }
+
+        public static void ResetSkippedImages() {
+            SkippedImageInfos.Clear();
+            RefreshCurrentTextures();
         }
 
         public static void SkipCurrentImage() {
-            if (CurrentImageInfo is not null) {
-                CurrentImageInfos.Enqueue(CurrentImageInfo);
+            if (CurrentImageInfo is null) {
+                Messenger.SendCallToAction("Please select a folder to go through images.");
+                return;
             }
+
+            SkippedImageInfos.Enqueue(CurrentImageInfo);
 
             LoadNextImageInfo();
         }
 
         public static void LikeCurrentImage() {
             if (CurrentImageInfo is null) {
-                // TODO: warn user
+                Messenger.SendCallToAction("Please select a folder to go through images.");
                 return;
             }
 
             if (LikeDirPath is null) {
-                // TODO: warn user
+                Messenger.SendCallToAction("Please select a folder to send liked images to.");
                 return;
             }
 
-            MoveFileTo(CurrentImageInfo.FilePath, LikeDirPath);
-
-            LoadNextImageInfo();
+            if (TryMoveFileTo(CurrentImageInfo.FilePath, LikeDirPath)) {
+                LoadNextImageInfo();
+            }
         }
 
         public static void DislikeCurrentImage() {
             if (CurrentImageInfo is null) {
-                // TODO: warn user
+                Messenger.SendCallToAction("Please select a folder to go through images.");
                 return;
             }
 
             if (DislikeDirPath is null) {
-                // TODO: warn user
+                Messenger.SendCallToAction("Please select a folder to send disliked images to.");
                 return;
             }
 
-            MoveFileTo(CurrentImageInfo.FilePath, DislikeDirPath);
-
-            LoadNextImageInfo();
+            if (TryMoveFileTo(CurrentImageInfo.FilePath, DislikeDirPath)) {
+                LoadNextImageInfo();
+            }
         }
 
-        private static void MoveFileTo(string filePath, string newDirPath) {
+        private static bool TryMoveFileTo(string filePath, string newDirPath) {
             try {
-                File.Move(filePath, newDirPath);
+                File.Move(filePath, Path.Combine(newDirPath, Path.GetFileName(filePath)));
             } catch (Exception ex) {
-                // TODO: warn user
+                Messenger.SendError($"Could not move file at '{filePath}' to '{newDirPath}'. Exception: {ex}");
+                return false;
             }
+
+            return true;
         }
     }
 }

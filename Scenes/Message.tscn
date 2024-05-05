@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3 uid="uid://bn21tibvfo0xq"]
+
+[ext_resource type="Script" path="res://Scripts/Message.cs" id="1_f16w8"]
+
+[node name="Message" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 100)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -576.0
+offset_right = -376.0
+offset_bottom = 60.0
+grow_horizontal = 2
+size_flags_vertical = 0
+script = ExtResource("1_f16w8")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_vertical = 1
+vertical_alignment = 1
+autowrap_mode = 3
+text_overrun_behavior = 3
+
+[node name="Fade In Timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+autostart = true
+
+[node name="Life Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="Fade Out Timer" type="Timer" parent="."]
+one_shot = true

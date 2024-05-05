@@ -1,20 +1,20 @@
-﻿namespace LocalImageLiker {
+﻿namespace LocalImageLiker.Buttons.DirButtons {
     using Godot;
 
-    public partial class CurrentDirButton : Button {
-        public CurrentDirButton() => Pressed += OnButtonPressed;
+    public partial class LikeDirButton : Button {
+        public LikeDirButton() => Pressed += OnButtonPressed;
 
         private void OnButtonPressed() {
             LocalImageLiker.FileDialog.DirSelected += OnFileDialogDirSelected;
             LocalImageLiker.FileDialog.Canceled += OnFileDialogCanceled;
-            LocalImageLiker.FileDialog.CurrentDir = LocalImageLiker.CurrentDirPath;
+            LocalImageLiker.FileDialog.CurrentDir = LocalImageLiker.LikeDirPath;
             LocalImageLiker.FileDialog.Show();
         }
 
         private void OnFileDialogDirSelected(string selectedDir) {
             LocalImageLiker.FileDialog.DirSelected -= OnFileDialogDirSelected;
             LocalImageLiker.FileDialog.Canceled -= OnFileDialogCanceled;
-            LocalImageLiker.CurrentDirPath = selectedDir;
+            LocalImageLiker.LikeDirPath = selectedDir;
         }
 
         private void OnFileDialogCanceled() {
