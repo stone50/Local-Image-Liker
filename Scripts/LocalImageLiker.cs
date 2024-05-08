@@ -64,7 +64,7 @@ namespace LocalImageLiker {
             DislikeDirButton = GetNode<Button>("VBoxContainer/Body/Dislike/VBoxContainer/Dislike Dir Button");
             ImageTextureRect = GetNode<TextureRect>("VBoxContainer/Body/Image/VBoxContainer/Image Texture Rect");
 
-            if (Config.Load()) {
+            if (Config.Initialize()) {
                 LoadPropertyFromConfig<string?>(SetCurrentDirPath, nameof(CurrentDirPath), null);
                 LoadPropertyFromConfig<string?>(SetLikeDirPath, nameof(LikeDirPath), null);
                 LoadPropertyFromConfig<string?>(SetDislikeDirPath, nameof(DislikeDirPath), null);
@@ -139,7 +139,7 @@ namespace LocalImageLiker {
             CurrentImageInfo = null;
 
             if (CurrentDirPath is null) {
-                Messenger.SendCallToAction("Please select a folder to go through images.");
+                Messenger.SendMessage(Messenger.MessageType.CallToAction, "Please select a folder to go through images.");
                 return;
             }
 
@@ -147,7 +147,7 @@ namespace LocalImageLiker {
             try {
                 filePaths = Directory.GetFiles(CurrentDirPath);
             } catch (Exception ex) {
-                Messenger.SendError($"Could not get files in '{CurrentDirPath}'. Exception: {ex}");
+                Messenger.SendMessage(Messenger.MessageType.Error, $"Could not get files in '{CurrentDirPath}'. Exception: {ex}");
                 return;
             }
 
@@ -192,7 +192,7 @@ namespace LocalImageLiker {
             if (CurrentImageInfos.Count <= 0) {
                 CurrentImageInfo = null;
                 ImageTextureRect.Texture = null;
-                Messenger.SendInfo($"Could not find more images in '{CurrentDirPath}'");
+                Messenger.SendMessage(Messenger.MessageType.Info, $"Could not find more images in '{CurrentDirPath}'");
                 return;
             }
 
@@ -207,7 +207,7 @@ namespace LocalImageLiker {
 
         public static void SkipCurrentImage() {
             if (CurrentImageInfo is null) {
-                Messenger.SendCallToAction("Please select a folder to go through images.");
+                Messenger.SendMessage(Messenger.MessageType.CallToAction, "Please select a folder to go through images.");
                 return;
             }
 
@@ -218,12 +218,12 @@ namespace LocalImageLiker {
 
         public static void LikeCurrentImage() {
             if (CurrentImageInfo is null) {
-                Messenger.SendCallToAction("Please select a folder to go through images.");
+                Messenger.SendMessage(Messenger.MessageType.CallToAction, "Please select a folder to go through images.");
                 return;
             }
 
             if (LikeDirPath is null) {
-                Messenger.SendCallToAction("Please select a folder to send liked images to.");
+                Messenger.SendMessage(Messenger.MessageType.CallToAction, "Please select a folder to send liked images to.");
                 return;
             }
 
@@ -234,12 +234,12 @@ namespace LocalImageLiker {
 
         public static void DislikeCurrentImage() {
             if (CurrentImageInfo is null) {
-                Messenger.SendCallToAction("Please select a folder to go through images.");
+                Messenger.SendMessage(Messenger.MessageType.CallToAction, "Please select a folder to go through images.");
                 return;
             }
 
             if (DislikeDirPath is null) {
-                Messenger.SendCallToAction("Please select a folder to send disliked images to.");
+                Messenger.SendMessage(Messenger.MessageType.CallToAction, "Please select a folder to send disliked images to.");
                 return;
             }
 
@@ -252,7 +252,7 @@ namespace LocalImageLiker {
             try {
                 File.Move(filePath, Path.Combine(newDirPath, Path.GetFileName(filePath)));
             } catch (Exception ex) {
-                Messenger.SendError($"Could not move file at '{filePath}' to '{newDirPath}'. Exception: {ex}");
+                Messenger.SendMessage(Messenger.MessageType.Error, $"Could not move file at '{filePath}' to '{newDirPath}'. Exception: {ex}");
                 return false;
             }
 

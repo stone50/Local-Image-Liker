@@ -6,21 +6,21 @@
 
         private static readonly ConfigFile ConfigFile = new();
 
-        public static bool Load() {
+        public static bool Initialize() {
             var loadError = ConfigFile.Load(ConfigFilePath);
             if (loadError == Error.Ok) {
                 return true;
             }
 
-            Messenger.SendWarning("Could not load config file. Attempting to create a new config file.");
+            Messenger.SendMessage(Messenger.MessageType.Warning, "Could not load config file. Attempting to create a new config file.");
 
             var saveError = ConfigFile.Save(ConfigFilePath);
             if (saveError == Error.Ok) {
-                Messenger.SendInfo($"New config file created at '{ProjectSettings.GlobalizePath(ConfigFilePath)}'");
+                Messenger.SendMessage(Messenger.MessageType.Info, $"New config file created at '{ProjectSettings.GlobalizePath(ConfigFilePath)}'");
                 return true;
             }
 
-            Messenger.SendError($"Could not create a new config file at '{ProjectSettings.GlobalizePath(ConfigFilePath)}'");
+            Messenger.SendMessage(Messenger.MessageType.Error, $"Could not create a new config file at '{ProjectSettings.GlobalizePath(ConfigFilePath)}'");
             return false;
         }
 
@@ -34,7 +34,7 @@
 
             var saveError = ConfigFile.Save(ConfigFilePath);
             if (saveError != Error.Ok) {
-                Messenger.SendError($"Could not save property '{propertyName}' with value '{propertyValue}' to config file.");
+                Messenger.SendMessage(Messenger.MessageType.Error, $"Could not save property '{propertyName}' with value '{propertyValue}' to config file.");
             }
         }
 
