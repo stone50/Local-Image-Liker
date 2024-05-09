@@ -1,4 +1,4 @@
-﻿namespace LocalImageLiker.Scripts.Buttons {
+﻿namespace LocalImageLiker.Buttons {
     using Godot;
 
     public partial class ConfigButton : Button {

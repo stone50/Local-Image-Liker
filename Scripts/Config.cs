@@ -1,4 +1,4 @@
-﻿namespace LocalImageLiker.Scripts {
+﻿namespace LocalImageLiker {
     using Godot;
 
     public static class Config {

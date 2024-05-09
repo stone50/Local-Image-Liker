@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://hrmt8xnifs7d"]
 
 [ext_resource type="Texture2D" uid="uid://c2kus7g5v0iw3" path="res://Icons/close.svg" id="1_cw81n"]
-[ext_resource type="Script" path="res://Scripts/Config Scene/BatchSizeLineEdit.cs" id="1_trj15"]
-[ext_resource type="Script" path="res://Scripts/Config Scene/CloseButton.cs" id="2_la220"]
+[ext_resource type="Script" path="res://Scripts/Config Panel/CloseButton.cs" id="2_a2v2n"]
+[ext_resource type="Script" path="res://Scripts/Config Panel/BatchSizeLineEdit.cs" id="3_4jay5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pryq"]
 bg_color = Color(0.176471, 0.176471, 0.176471, 1)
@@ -45,11 +45,12 @@ label_settings = SubResource("LabelSettings_fwvr2")
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+tooltip_text = "Close Config Panel"
 focus_mode = 0
 icon = ExtResource("1_cw81n")
 icon_alignment = 1
 expand_icon = true
-script = ExtResource("2_la220")
+script = ExtResource("2_a2v2n")
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
@@ -68,6 +69,8 @@ layout_mode = 2
 
 [node name="Batch Size Label" type="Label" parent="VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Number of images to load per directory read"
+mouse_filter = 0
 text = "Batch Size"
 label_settings = SubResource("LabelSettings_jpy0b")
 
@@ -78,4 +81,4 @@ layout_mode = 2
 [node name="Batch Size Line Edit" type="LineEdit" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 2
-script = ExtResource("1_trj15")
+script = ExtResource("3_4jay5")

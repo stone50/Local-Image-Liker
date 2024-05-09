@@ -1,4 +1,4 @@
-﻿namespace LocalImageLiker.Scripts.Config_Scene {
+﻿namespace LocalImageLiker.ConfigPanel {
     using Godot;
 
     public partial class CloseButton : Button {
