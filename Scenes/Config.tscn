@@ -1,0 +1,81 @@
+[gd_scene load_steps=7 format=3 uid="uid://hrmt8xnifs7d"]
+
+[ext_resource type="Texture2D" uid="uid://c2kus7g5v0iw3" path="res://Icons/close.svg" id="1_cw81n"]
+[ext_resource type="Script" path="res://Scripts/Config Scene/BatchSizeLineEdit.cs" id="1_trj15"]
+[ext_resource type="Script" path="res://Scripts/Config Scene/CloseButton.cs" id="2_la220"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pryq"]
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_fwvr2"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_jpy0b"]
+font_size = 20
+
+[node name="Config" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5pryq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+text = "Config"
+label_settings = SubResource("LabelSettings_fwvr2")
+
+[node name="Close Button" type="Button" parent="VBoxContainer/Header"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+focus_mode = 0
+icon = ExtResource("1_cw81n")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("2_la220")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Batch Size Label" type="Label" parent="VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Batch Size"
+label_settings = SubResource("LabelSettings_jpy0b")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Batch Size Line Edit" type="LineEdit" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+script = ExtResource("1_trj15")

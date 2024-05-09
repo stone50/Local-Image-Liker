@@ -1,10 +1,3 @@
-/*
- * TODO:
- *  Add a logging system
- *  Add a button to manually refresh the textures (or possibly setup a directory monitor)
- *  Add a button to manually reset the skipped images
- */
-
 namespace LocalImageLiker {
     using Godot;
     using System;
@@ -23,11 +16,16 @@ namespace LocalImageLiker {
             }
         }
 
+        private static readonly PackedScene ConfigPanelScene = GD.Load<PackedScene>("res://Scenes/Config.tscn");
+
+        public static LocalImageLiker Singleton { get; private set; } = null!;
+
         public static FileDialog FileDialog { get; private set; } = null!;
         private static Button CurrentDirButton = null!;
         private static Button LikeDirButton = null!;
         private static Button DislikeDirButton = null!;
         private static TextureRect ImageTextureRect = null!;
+        private static PanelContainer? ConfigPanel;
 
         private static string? currentDirPath;
         public static string? CurrentDirPath {
@@ -57,9 +55,11 @@ namespace LocalImageLiker {
         private static ImageInfo? CurrentImageInfo;
         private static readonly Queue<ImageInfo> SkippedImageInfos = new();
 
+        public LocalImageLiker() => Singleton = this;
+
         public override void _Ready() {
             FileDialog = GetNode<FileDialog>("FileDialog");
-            CurrentDirButton = GetNode<Button>("VBoxContainer/Header/Current Dir Button");
+            CurrentDirButton = GetNode<Button>("VBoxContainer/Header/HBoxContainer/CenterContainer/Current Dir Button");
             LikeDirButton = GetNode<Button>("VBoxContainer/Body/Like/VBoxContainer/Like Dir Button");
             DislikeDirButton = GetNode<Button>("VBoxContainer/Body/Dislike/VBoxContainer/Dislike Dir Button");
             ImageTextureRect = GetNode<TextureRect>("VBoxContainer/Body/Image/VBoxContainer/Image Texture Rect");
@@ -257,6 +257,24 @@ namespace LocalImageLiker {
             }
 
             return true;
+        }
+
+        public static void OpenConfigPanel() {
+            if (ConfigPanel is not null) {
+                return;
+            }
+
+            ConfigPanel = ConfigPanelScene.Instantiate<PanelContainer>();
+            Singleton.AddChild(ConfigPanel);
+        }
+
+        public static void CloseConfigPanel() {
+            if (ConfigPanel is null) {
+                return;
+            }
+
+            Singleton.RemoveChild(ConfigPanel);
+            ConfigPanel = null;
         }
     }
 }

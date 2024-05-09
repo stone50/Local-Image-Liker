@@ -1,16 +1,21 @@
-[gd_scene load_steps=13 format=3 uid="uid://cyiv6dfc511tp"]
+[gd_scene load_steps=18 format=3 uid="uid://cyiv6dfc511tp"]
 
 [ext_resource type="Script" path="res://Scripts/LocalImageLiker.cs" id="1_s3bok"]
 [ext_resource type="Texture2D" uid="uid://bhlh2ydmiimpu" path="res://Icons/trash.svg" id="1_xqjv6"]
 [ext_resource type="Texture2D" uid="uid://mqq8he7filu1" path="res://Icons/folder.svg" id="3_qakui"]
 [ext_resource type="Script" path="res://Scripts/Buttons/DirButtons/CurrentDirButton.cs" id="3_s4s37"]
 [ext_resource type="Texture2D" uid="uid://cflmyaqqo6dkt" path="res://Icons/heart.png" id="4_0ti8q"]
+[ext_resource type="Texture2D" uid="uid://d266axwhwqy8b" path="res://Icons/refresh.svg" id="4_fffpw"]
+[ext_resource type="Texture2D" uid="uid://c34jjp3cxoao3" path="res://Icons/cog.svg" id="4_pt803"]
 [ext_resource type="Script" path="res://Scripts/Buttons/DislikeButton.cs" id="5_3r3wk"]
 [ext_resource type="Script" path="res://Scripts/Buttons/DirButtons/DislikeDirButton.cs" id="5_6nney"]
+[ext_resource type="Script" path="res://Scripts/Buttons/RefreshCurrentDirButton.cs" id="5_radpe"]
 [ext_resource type="Script" path="res://Scripts/Messenger.cs" id="6_6ejf2"]
+[ext_resource type="Script" path="res://Scripts/Buttons/ConfigButton.cs" id="7_2dj6l"]
 [ext_resource type="Script" path="res://Scripts/Buttons/SkipButton.cs" id="7_d6w72"]
 [ext_resource type="Script" path="res://Scripts/Buttons/DirButtons/LikeDirButton.cs" id="7_yk3wu"]
 [ext_resource type="Script" path="res://Scripts/Buttons/LikeButton.cs" id="8_0q36u"]
+[ext_resource type="Script" path="res://Scripts/Buttons/ResetSkippedImagesButton.cs" id="11_symhv"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_emslu"]
 font_size = 32
@@ -46,19 +51,26 @@ grow_vertical = 2
 [node name="Header" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Header"]
 layout_mode = 2
-size_flags_horizontal = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/margin_left = 5
 
-[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/Header/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Local Image Liker"
 label_settings = SubResource("LabelSettings_emslu")
 vertical_alignment = 1
 
-[node name="Current Dir Button" type="Button" parent="VBoxContainer/Header"]
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/Header/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Current Dir Button" type="Button" parent="VBoxContainer/Header/HBoxContainer/CenterContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -69,6 +81,30 @@ alignment = 0
 text_overrun_behavior = 3
 clip_text = true
 script = ExtResource("3_s4s37")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Header/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Refresh Current Dir Button" type="Button" parent="VBoxContainer/Header/HBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 0
+icon = ExtResource("4_fffpw")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("5_radpe")
+
+[node name="Config Button" type="Button" parent="VBoxContainer/Header/HBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+focus_mode = 0
+icon = ExtResource("4_pt803")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("7_2dj6l")
 
 [node name="Body" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -115,14 +151,32 @@ size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Skip Button" type="Button" parent="VBoxContainer/Body/Image/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Body/Image/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Control" type="Control" parent="VBoxContainer/Body/Image/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skip Button" type="Button" parent="VBoxContainer/Body/Image/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 6
 size_flags_vertical = 8
 focus_mode = 0
 text = "Skip"
 script = ExtResource("7_d6w72")
+
+[node name="Reset Skipped Images Button" type="Button" parent="VBoxContainer/Body/Image/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 0
+icon = ExtResource("4_fffpw")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("11_symhv")
 
 [node name="Like" type="PanelContainer" parent="VBoxContainer/Body"]
 custom_minimum_size = Vector2(200, 0)
